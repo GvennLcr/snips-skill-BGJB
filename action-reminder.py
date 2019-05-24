@@ -5,7 +5,7 @@ from pytz import timezone
 from collections import namedtuple
 import http.client
 import json
-import Patient
+#import Patient
 
 MQTT_IP_ADDR = "localhost"
 MQTT_PORT = 1883
@@ -29,3 +29,13 @@ def intent_received(hermes, intent_message):
 
 with Hermes(MQTT_ADDR) as h:
 	h.subscribe_intents(intent_received).start()
+
+class Patient:
+    def __init__(self, id, firstName, lastName, birthdate, address, voucher, phone):
+        self.Id = id
+        self.FirstName = firstName
+        self.LastName = lastName
+        self.Birthdate = birthdate
+        self.Address = address
+        self.Voucher = voucher
+        self.Phone = phone
