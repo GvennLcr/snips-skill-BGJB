@@ -20,7 +20,7 @@ def intent_received(hermes, intent_message):
 
 		headers = {'Content-Type': 'application/json'}
 		apiResponse = requests.get("http://vouvouf.eu:8080/api/patients/{}".format(patientId), headers=headers)
-		pdb.set_trace()
+		#pdb.set_trace()
 
 		if apiResponse.status_code == 200:
 			patient = json.loads(apiResponse.text, object_hook=lambda d: namedtuple('X', d.keys())(*d.values()))
