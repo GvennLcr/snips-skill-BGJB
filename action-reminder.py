@@ -16,7 +16,7 @@ def intent_received(hermes, intent_message):
 	now = datetime.now(timezone('Europe/Paris'))
 
 	try:
-		patientId = intent_message.slots.PatientId.first().value
+		patientId = int(intent_message.slots.PatientId.first().value)
 		print(patientId)
 
 		headers = {'Content-Type': 'application/json'}
