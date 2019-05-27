@@ -17,9 +17,11 @@ def intent_received(hermes, intent_message):
 
 	try:
 		patientId = intent_message.slots.PatientId.first()
+		print(patientId)
 
 		headers = {'Content-Type': 'application/json'}
 		apiResponse = requests.get("http://vouvouf.eu:8080/api/patients/{}".format(patientId), headers=headers)
+		print(apiResponse.status_code)
 		#pdb.set_trace()
 
 		if apiResponse.status_code == 200:
