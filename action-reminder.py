@@ -17,7 +17,7 @@ def intent_received(hermes, intent_message):
 
 	try:
 		try:
-			apiConnection = http.client.HTTPConnection('http://vouvouf.eu:8080/api/patients/1', 8080)
+			apiConnection = http.client.HTTPConnection('http://vouvouf.eu/api/patients/1', 8080)
 		except:
 			reminder_msg = "Désolé, je ne parviens à me connecter pour récupérer les informations demandées."
 		
