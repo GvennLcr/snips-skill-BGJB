@@ -16,19 +16,18 @@ def intent_received(hermes, intent_message):
 	now = datetime.now(timezone('Europe/Paris'))
 
 	try:
-		try:
-			apiConnection = http.client.HTTPConnection('http://vouvouf.eu/api/patients/1', 8080)
-		except:
-			reminder_msg = "Désolé, je ne parviens à me connecter pour récupérer les informations demandées."
-		
-		if reminder_msg == "":
-			apiResponse = apiConnection.getresponse()
+		apiConnection = http.client.HTTPConnection('http://vouvouf.eu/api/patients/1', 8080)
+		apiResponse = apiConnection.getresponse()
 
-			patient = json.loads(apiResponse.read(), object_hook=lambda d: namedtuple('X', d.keys())(*d.values()))
+		patient = json.loads(apiResponse.read(), object_hook=lambda d: namedtuple('X', d.keys())(*d.values()))
 
-			reminder_msg = "Le patient s'appelle {0} {1}".format(patient.FirstName, patient.LastName)
-	except:
-		reminder_msg = "ça ne marche pas"
+		reminder_msg = "Le patient s'appelle {0} {1}".format(patient.FirstName, patient.LastName)
+	except http.client.HTTPException:
+		reminder_msg = "Désolé, je ne parviens à me connecter pour récupérer les informations demandées."
+	except ConnectionError:
+		reminder_msg = "Désolé, je ne parviens à récupérer les informations demandées."
+	except json.JSONDecodeError:
+		reminder_msg = "Désolé, il y a un soucis, je ne parviens à interpréter les informations demandées."
 
 	hermes.publish_end_session(intent_message.session_id, reminder_msg)
 
