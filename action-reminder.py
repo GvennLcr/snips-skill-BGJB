@@ -16,8 +16,7 @@ def intent_received(hermes, intent_message):
 	now = datetime.now(timezone('Europe/Paris'))
 
 	try:
-		intent_json = json.loads(intent_message)
-		patientId = intent_json['slots'][0]['value']['value']
+		patientId = intent_message.slots.PatientId.first()
 
 		headers = {'Content-Type': 'application/json'}
 		apiResponse = requests.get("http://vouvouf.eu:8080/api/patients/{}".format(patientId), headers=headers)
@@ -26,7 +25,7 @@ def intent_received(hermes, intent_message):
 		if apiResponse.status_code == 200:
 			patient = json.loads(apiResponse.text, object_hook=lambda d: namedtuple('X', d.keys())(*d.values()))
 			print(patient)
-			reminder_msg = "Le patient s'appelle {0} {1}".format(patient.firstName, patient.lastName)
+			reminder_msg = "Le patient numéro {} s'appelle {} {}".format(patientId, patient.firstName, patient.lastName)
 		else:
 			raise ConnectionError #Mettre à jour l'API après une modif dans la BDD ?
 
