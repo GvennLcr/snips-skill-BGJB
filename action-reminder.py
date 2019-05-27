@@ -23,7 +23,7 @@ def intent_received(hermes, intent_message):
 		apiResponse = requests.get("http://vouvouf.eu:8080/api/patients/1", headers=headers)
 
 		if apiResponse.status_code == 200:
-			patient = json.loads(apiResponse.read(), object_hook=lambda d: namedtuple('X', d.keys())(*d.values()))
+			patient = json.loads(apiResponse.text, object_hook=lambda d: namedtuple('X', d.keys())(*d.values()))
 			reminder_msg = "Le patient s'appelle {0} {1}".format(patient.FirstName, patient.LastName)
 
 	except ConnectionError:
@@ -41,7 +41,7 @@ def intent_received(hermes, intent_message):
 			apiResponse = s.get("http://vouvouf.eu:8080/api/patients/1", headers=headers)
 
 			if apiResponse.status_code == 200:
-				patient = json.loads(apiResponse.read(), object_hook=lambda d: namedtuple('X', d.keys())(*d.values()))
+				patient = json.loads(apiResponse.text, object_hook=lambda d: namedtuple('X', d.keys())(*d.values()))
 				reminder_msg = "Le patient s'appelle {0} {1}".format(patient.FirstName, patient.LastName)
 
 		except ConnectionError:
