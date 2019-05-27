@@ -42,7 +42,8 @@ def intent_received(hermes, intent_message):
 
 			if apiResponse.status_code == 200:
 				patient = json.loads(apiResponse.text, object_hook=lambda d: namedtuple('X', d.keys())(*d.values()))
-				reminder_msg = "Le patient s'appelle {0} {1}".format(patient.FirstName, patient.LastName)
+				print(patient)
+				reminder_msg = "Le patient s'appelle {0} {1}".format(patient.firstName, patient.lastName)
 
 		except ConnectionError:
 			reminder_msg = "Désolé, je ne parviens pas à récupérer les informations demandées."
