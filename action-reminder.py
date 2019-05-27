@@ -16,12 +16,17 @@ def intent_received(hermes, intent_message):
 	now = datetime.now(timezone('Europe/Paris'))
 
 	try:
-		apiConnection = http.client.HTTPConnection('http://vouvouf.eu:8080/api/patients/1')
-		apiResponse = apiConnection.getresponse()
+		try:
+			apiConnection = http.client.HTTPConnection('http://vouvouf.eu:8080/api/patients/1')
+		except:
+			reminder_msg = "Connexion à l'API impossible."
+		
+		if reminder_msg == "":
+			apiResponse = apiConnection.getresponse()
 
-		patient = json.loads(apiResponse.read(), object_hook=lambda d: namedtuple('X', d.keys())(*d.values()))
+			patient = json.loads(apiResponse.read(), object_hook=lambda d: namedtuple('X', d.keys())(*d.values()))
 
-		reminder_msg = "Le patient s'appelle {0} {1}".format(patient.FirstName, patient.LastName)
+			reminder_msg = "Le patient s'appelle {0} {1}".format(patient.FirstName, patient.LastName)
 	except:
 		reminder_msg = "ça ne marche pas"
 
