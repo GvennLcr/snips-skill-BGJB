@@ -27,7 +27,7 @@ def intent_received(hermes, intent_message):
 		if apiResponse.status_code == 200:
 			patient = json.loads(apiResponse.text, object_hook=lambda d: namedtuple('X', d.keys())(*d.values()))
 			print(patient)
-			reminder_msg = "Le patient numéro {} s'appelle {} {}".format(patientId, patient.firstName, patient.lastName)
+			reminder_msg = "Le patient numéro {} s appelle {} {}".format(patientId, patient.firstName, patient.lastName)
 		else:
 			raise ConnectionError #Mettre à jour l'API après une modif dans la BDD ?
 
@@ -41,6 +41,9 @@ def intent_received(hermes, intent_message):
 
 	print("DEBUG : reminder_msg = " + reminder_msg)
 	hermes.publish_end_session(intent_message.session_id, reminder_msg)
+
+def patient_info():
+
 
 with Hermes(MQTT_ADDR) as h:
 	print("test")
