@@ -15,47 +15,40 @@ headers = {'Content-Type': 'application/json'}
 is_exception_raised = False
 #pdb.set_trace()
 
-def get_info(info_message):
+def get_info(info_type, patient):
 	switcher = {
-		"Informations": "",
+		"Informations": 'Le patient ',
 		"Garant": "Voucher",
 		"Traitement": "Treatment",
-		"Maladie": "Illness",
+		"Maladie": "Le patient numéro {} souffre des maladies suivantes : {}".format(patient.id, patient.suffer.first().illness.name),
 		"Nom": "Name"
 	}
-	return switcher.get(info_message, "Invalid info")
+	return switcher.get(info_type, "Invalid info")
 
 
 def patient_info_handler(hermes, intent_message):
 	try:
 		patient_info = ""
-		if len(intent_message.slots) == 0:
-			raise ValueError('No slot value found')
-
 		patientId = int(intent_message.slots.PatientId.first().value)
 		print(patientId)
 		print("intent_message.slots.InfoType.first() = {}".format(intent_message.slots.InfoType.first()))
 
-		requested_info = get_info(intent_message.slots.InfoType.first().value)
+		apiResponse = requests.get("http://vouvouf.eu:8080/api/patients/AllInfos/{}".format(patientId), headers=headers)
+		print("DEBUG : http://vouvouf.eu:8080/api/patients/AllInfos/{} | Status code = {}".format(patientId, apiResponse.status_code))
 
-		apiResponse = requests.get("http://vouvouf.eu:8080/api/patients/{}/{}".format(patientId, requested_info), headers=headers)
-		print("DEBUG : http://vouvouf.eu:8080/api/patients/{}/{} | Status code = {}".format(patientId, apiResponse.status_code, requested_info))
-
-		if apiResponse.status_code == 200:
-			patient = json.loads(apiResponse.text, object_hook=lambda d: namedtuple('X', d.keys())(*d.values()))
-			print(patient)
-			patient_info = "Le patient numéro {} s appelle {} {}".format(patientId, patient.firstName, patient.lastName)
-		else:
+		if apiResponse.status_code != 200:
 			raise ConnectionError #Mettre à jour l'API après une modif dans la BDD ?
+
+		patient = json.loads(apiResponse.text, object_hook=lambda d: namedtuple('X', d.keys())(*d.values()))
+		print(patient)
+		print("patient.suffer.first().illness.name = {}".format(patient.suffer.first().illness.name))
+		patient_info = get_info(intent_message.slots.InfoType.first().value, patient)
+		#patient_info = "Le patient numéro {} s appelle {} {}".format(patientId, patient.firstName, patient.lastName)
 
 	except ConnectionError:
 		patient_info = "Désolé, je ne parviens pas à récupérer les informations demandées."
 	except json.JSONDecodeError:
 		patient_info = "Désolé, il y a un soucis, je ne parviens à interpréter les informations demandées."
-	except ValueError:
-		patient_info = "Excusez-moi, je n'ai pas compris de quel patient vous parlez, pouvez-vous répéter son numéro ?"
-		hermes.publish_continue_session(intent_message.session_id, patient_info, ["PillsReminder"], slot_to_fill=json.dumps("PatientId"))
-		return
 	except Exception:
 		patient_info = "Désolé, une erreur est survenue, pouvez-vous répéter ou reformuler votre phrase s'il vous plaît ?"
 	finally:
