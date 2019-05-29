@@ -26,6 +26,7 @@ def get_info(info_type, patient):
 	return switcher.get(info_type, "Invalid info")
 
 def get_illnesses_text(suffers):
+	print("get_illnesses_text({})".format(suffers))
 	res = ""
 	for suffer in suffers:
 		res += suffer.illness.name + ", "
@@ -48,7 +49,8 @@ def patient_info_handler(hermes, intent_message):
 
 		patient = json.loads(apiResponse.text, object_hook=lambda d: namedtuple('X', d.keys())(*d.values()))
 		print(patient)
-		print("patient.suffer.first().illness.name = {}".format(patient.suffer.first().illness.name))
+		#print("patient.suffer.first().illness.name = {}".format(patient.suffer.first().illness.name))
+		print("intent_message.slots.InfoType.first().value = {}".format(intent_message.slots.InfoType.first().value))
 		patient_info = get_info(intent_message.slots.InfoType.first().value, patient)
 		#patient_info = "Le patient numéro {} s appelle {} {}".format(patientId, patient.firstName, patient.lastName)
 
