@@ -29,9 +29,9 @@ def get_treatments_text(patient):
 	print("get_treatments_text : patient.frequency = {}".format(patient.frequency))
 
 	if len(patient.frequency) == 0:
-		return "Le patient ne suit aucun traitement."
+		return "Le patient numéro {} ne suit aucun traitement.".format(patient.id)
 
-	res = "Le patient numéro {} suit les traitements suivants : ".format(patient.id),
+	res = "Le patient numéro {} suit les traitements suivants : ".format(patient.id)
 
 	for frequency in patient.frequency:
 		res += '{} de {}, '.format(frequency.treatment.dosage, frequency.treatment.name)
@@ -75,11 +75,14 @@ def patient_info_handler(hermes, intent_message):
 		patient_info = get_info(intent_message.slots.InfoType.first().value, patient)
 		#patient_info = "Le patient numéro {} s appelle {} {}".format(patientId, patient.firstName, patient.lastName)
 
-	except ConnectionError:
+	except ConnectionError as ex:
+		print(ex)
 		patient_info = "Désolé, je ne parviens pas à récupérer les informations demandées."
-	except json.JSONDecodeError:
+	except json.JSONDecodeError as ex:
+		print(ex)
 		patient_info = "Désolé, il y a un soucis, je ne parviens à interpréter les informations demandées."
-	except Exception:
+	except Exception as ex:
+		print(ex)
 		patient_info = "Désolé, une erreur est survenue, pouvez-vous répéter ou reformuler votre phrase s'il vous plaît ?"
 	finally:
 		print("DEBUG : patient_info = " + patient_info)
