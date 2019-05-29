@@ -15,6 +15,16 @@ headers = {'Content-Type': 'application/json'}
 is_exception_raised = False
 #pdb.set_trace()
 
+def get_info(info_message):
+	switcher = {
+		"Informations": "",
+		"Garant": "Voucher",
+		"Traitement": "Treatment",
+		"Maladie": "Illness",
+		"Nom": "Name"
+	}
+	return switcher.get(info_message, "Invalid info")
+
 
 def patient_info_handler(hermes, intent_message):
 	try:
@@ -24,9 +34,12 @@ def patient_info_handler(hermes, intent_message):
 
 		patientId = int(intent_message.slots.PatientId.first().value)
 		print(patientId)
+		print("intent_message.slots.InfoType.first() = {}".format(intent_message.slots.InfoType.first()))
 
-		apiResponse = requests.get("http://vouvouf.eu:8080/api/patients/{}".format(patientId), headers=headers)
-		print("DEBUG : http://vouvouf.eu:8080/api/patients/{} | Status code = {}".format(patientId, apiResponse.status_code))
+		requested_info = get_info(intent_message.slots.InfoType.first().value)
+
+		apiResponse = requests.get("http://vouvouf.eu:8080/api/patients/{}/{}".format(patientId, requested_info), headers=headers)
+		print("DEBUG : http://vouvouf.eu:8080/api/patients/{}/{} | Status code = {}".format(patientId, apiResponse.status_code, requested_info))
 
 		if apiResponse.status_code == 200:
 			patient = json.loads(apiResponse.text, object_hook=lambda d: namedtuple('X', d.keys())(*d.values()))
@@ -42,11 +55,12 @@ def patient_info_handler(hermes, intent_message):
 	except ValueError:
 		patient_info = "Excusez-moi, je n'ai pas compris de quel patient vous parlez, pouvez-vous répéter son numéro ?"
 		hermes.publish_continue_session(intent_message.session_id, patient_info, ["PillsReminder"], slot_to_fill=json.dumps("PatientId"))
-	else:
-		patient_info = "Désolé, un erreur est survenue, pouvez-vous répéter ou reformuler votre phrase s'il vous plaît ?"
-		hermes.publish_end_session(intent_message.session_id, patient_info)
+		return
+	except Exception:
+		patient_info = "Désolé, une erreur est survenue, pouvez-vous répéter ou reformuler votre phrase s'il vous plaît ?"
 	finally:
 		print("DEBUG : patient_info = " + patient_info)
+		hermes.publish_end_session(intent_message.session_id, patient_info)
 
 
 with Hermes(MQTT_ADDR) as h:
