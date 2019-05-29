@@ -19,23 +19,32 @@ def get_info(info_type, patient):
 	switcher = {
 		"Informations": 'Le patient ',
 		"Garant": "Voucher",
-		"Traitement": "Le patient numéro {} suit les traitements suivants : {}".format(patient.id, get_treatments_text(patient.frequency)),
+		"Traitement": get_treatments_text(patient),
 		"Maladie": "Le patient numéro {} souffre des maladies suivantes : {}".format(patient.id, get_illnesses_text(patient.suffer)),
 		"Nom": "Name"
 	}
 	return switcher.get(info_type, "Invalid info")
 
-def get_treatments_text(frequencies):
-	print("get_treatments_text({})".format(frequencies))
-	res = ""
-	for frequency in frequencies:
+def get_treatments_text(patient):
+	print("get_treatments_text : patient.frequency = {}".format(patient.frequency))
+
+	if len(patient.frequency) == 0:
+		return "Le patient ne suit aucun traitement."
+
+	res = "Le patient numéro {} suit les traitements suivants : ".format(patient.id),
+
+	for frequency in patient.frequency:
 		res += '{} de {}, '.format(frequency.treatment.dosage, frequency.treatment.name)
 		if frequency.medicationPerDay != 0:
 			res += '{} fois par jour'.format(frequency.medicationPerDay)
 		elif frequency.medicationPerWeek != 0:
 			res += '{} fois par semaine'.format(frequency.medicationPerWeek)
 		else:
-			res += 'dont je ne connais pas fréquence de prise. Ce médicament est à prendre jusqu\'au {}. '.format(frequency.toDate)
+			res += 'dont je ne connais pas la fréquence de prise.'
+
+		if frequency.toDate != None:
+			res += 'Ce médicament est à prendre jusqu\'au {}. '.format(frequency.toDate)
+
 	print(res)
 	return res
 
