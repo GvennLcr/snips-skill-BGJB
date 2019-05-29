@@ -58,9 +58,9 @@ def patient_info_handler(hermes, intent_message):
 		print("DEBUG : reminder_msg = " + reminder_msg)
 
 
-def pills_reminder_handler(hermes, intent_message):
+"""def pills_reminder_handler(hermes, intent_message):
 	if reminder_msg == "":
-		reminder_msg = "Désolé, un erreur est survenue, pouvez-vous répéter ou reformuler votre phrase s'il vous plaît ?"
+		reminder_msg = "Désolé, un erreur est survenue, pouvez-vous répéter ou reformuler votre phrase s'il vous plaît ?" """
 
 
 with Hermes(MQTT_ADDR) as h:
@@ -68,5 +68,5 @@ with Hermes(MQTT_ADDR) as h:
 	#intent_received(None, '{"input": "comment s\' appelle le patient numéro un","intent": {"intentName": "DiiagePFC:AskPatientInfos","confidenceScore": 1},"slots": [{"rawValue": "un","value": {"kind": "Number","value": 1},"range": {"start": 37,"end": 39},"entity": "snips/number","slotName": "PatientId"}]}')
 	h\
 		.subscribe_intents("AskPatientInfos", patient_info_handler)\
-		.subscribe_intents("PillsReminder", pills_reminder_handler)\
+		#.subscribe_intents("PillsReminder", pills_reminder_handler)\
 		.start()
