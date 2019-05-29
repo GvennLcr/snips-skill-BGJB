@@ -19,18 +19,30 @@ def get_info(info_type, patient):
 	switcher = {
 		"Informations": 'Le patient ',
 		"Garant": "Voucher",
-		"Traitement": "Treatment",
+		"Traitement": "Le patient numéro {} suit les traitements suivants : {}".format(patient.id, get_treatments_text(patient.frequency)),
 		"Maladie": "Le patient numéro {} souffre des maladies suivantes : {}".format(patient.id, get_illnesses_text(patient.suffer)),
 		"Nom": "Name"
 	}
 	return switcher.get(info_type, "Invalid info")
 
+def get_treatments_text(frequencies):
+	print("get_treatments_text({})".format(frequencies))
+	res = ""
+	for frequency in frequencies:
+		res += '{} de {}, '.format(frequency.treatment.dosage, frequency.treatment.name)
+		if frequency.medicationPerDay != 0:
+			res += '{} fois par jour'.format(frequency.medicationPerDay)
+		elif frequency.medicationPerWeek != 0:
+			res += '{} fois par semaine'.format(frequency.medicationPerWeek)
+		else:
+			res += 'dont je ne connais pas fréquence de prise. Ce médicament est à prendre jusqu\'au {}. '.format(frequency.toDate)
+	print(res)
+	return res
+
 def get_illnesses_text(suffers):
-	print("get_illnesses_text({})".format(suffers))
 	res = ""
 	for suffer in suffers:
 		res += suffer.illness.name + ", "
-	print(res)
 	return res
 
 
