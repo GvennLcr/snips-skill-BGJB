@@ -68,5 +68,5 @@ with Hermes(MQTT_ADDR) as h:
 	#intent_received(None, '{"input": "comment s\' appelle le patient numéro un","intent": {"intentName": "DiiagePFC:AskPatientInfos","confidenceScore": 1},"slots": [{"rawValue": "un","value": {"kind": "Number","value": 1},"range": {"start": 37,"end": 39},"entity": "snips/number","slotName": "PatientId"}]}')
 	h\
 		.subscribe_intents("AskPatientInfos", patient_info_handler)\
-		#.subscribe_intents("PillsReminder", pills_reminder_handler)\
 		.start()
+		#.subscribe_intents("PillsReminder", pills_reminder_handler)\
