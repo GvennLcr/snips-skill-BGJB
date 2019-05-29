@@ -20,10 +20,17 @@ def get_info(info_type, patient):
 		"Informations": 'Le patient ',
 		"Garant": "Voucher",
 		"Traitement": "Treatment",
-		"Maladie": "Le patient numéro {} souffre des maladies suivantes : {}".format(patient.id, patient.suffer.first().illness.name),
+		"Maladie": "Le patient numéro {} souffre des maladies suivantes : {}".format(patient.id, get_illnesses_text(patient.suffer)),
 		"Nom": "Name"
 	}
 	return switcher.get(info_type, "Invalid info")
+
+def get_illnesses_text(suffers):
+	res = ""
+	for suffer in suffers:
+		res += suffer.illness.name + ", "
+	print(res)
+	return res
 
 
 def patient_info_handler(hermes, intent_message):
