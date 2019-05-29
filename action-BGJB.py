@@ -19,8 +19,7 @@ is_exception_raised = False
 def patient_info_handler(hermes, intent_message):
 	try:
 		patient_info = ""
-		print(intent_message)
-		if intent_message.slots.count() == 0:
+		if len(intent_message.slots) == 0:
 			raise ValueError('No slot value found')
 
 		patientId = int(intent_message.slots.PatientId.first().value)
@@ -44,6 +43,7 @@ def patient_info_handler(hermes, intent_message):
 		patient_info = "Excusez-moi, je n'ai pas compris de quel patient vous parlez, pouvez-vous répéter son numéro ?"
 		hermes.publish_continue_session(intent_message.session_id, patient_info, ["PillsReminder"], slot_to_fill=json.dumps("PatientId"))
 	else:
+		patient_info = "Désolé, un erreur est survenue, pouvez-vous répéter ou reformuler votre phrase s'il vous plaît ?"
 		hermes.publish_end_session(intent_message.session_id, patient_info)
 	finally:
 		print("DEBUG : patient_info = " + patient_info)
@@ -51,4 +51,4 @@ def patient_info_handler(hermes, intent_message):
 
 with Hermes(MQTT_ADDR) as h:
 	print("test")
-	h.subscribe_intents('DiiagePFC:AskPatientInfos', patient_info_handler).start()
+	h.subscribe_intent('DiiagePFC:AskPatientInfos', patient_info_handler).start()
