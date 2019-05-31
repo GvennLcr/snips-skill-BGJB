@@ -20,13 +20,13 @@ def get_info(info_type, patient):
 		"Informations": get_information_text(patient),
 		"Garant": "Voici les coordonnées du garant du patient numéro {} : {}".format(patient.id, patient.voucher),
 		"Traitement": get_treatments_text(patient),
-		"Maladie": "Le patient numéro {} souffre des maladies suivantes : {}".format(patient.id, get_illnesses_text(patient.suffer)),
+		"Maladie": get_illnesses_text(patient),
 		"Nom": "Le patient numéro {} s'appelle {} {}.".format(patient.id, patient.firstName, patient.lastName)
 	}
 	return switcher.get(info_type, "Invalid info")
 
 def get_information_text(patient):
-	res = get_info("Maladie", patient) + " " + get_info("Traitement", patient)
+	res = get_illnesses_text(patient) + " " + get_treatments_text(patient)
 	print("1 - res = " + res)
 	res.replace("Le patient numéro {}".format(patient.id), "Il") # TODO : "Elle" ?
 	print("2 - res = " + res)
@@ -54,9 +54,13 @@ def get_treatments_text(patient):
 
 	return res
 
-def get_illnesses_text(suffers):
-	res = ""
-	for suffer in suffers:
+def get_illnesses_text(patient):
+	if len(patient.frequency) == 0:
+		return "Je ne connais pas les maladies du patient numéro {}. Veuillez demander au médecin traitant.".format(patient.id)
+
+	res = "Le patient numéro {} souffre des maladies suivantes : ".format(patient.id)
+
+	for suffer in patient.suffer:
 		res += suffer.illness.name + ", "
 	return res
 
