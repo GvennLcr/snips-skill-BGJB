@@ -30,9 +30,9 @@ def get_information_text(patient):
 	print("1 - information_text = " + information_text)
 	information_text.replace("Le patient numéro {}".format(patient.id), "Il") # TODO : "Elle" ?
 	print("2 - information_text = " + information_text)
-	information_text = get_info("Nom", patient) + " " + information_text
-	print("3 - information_text = " + information_text)
-	return information_text
+	full_information_text = get_info("Nom", patient) + " " + information_text
+	print("3 - information_text = " + full_information_text)
+	return full_information_text
 
 def get_treatments_text(patient):
 	if len(patient.frequency) == 0:
