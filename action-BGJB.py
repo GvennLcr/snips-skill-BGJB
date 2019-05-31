@@ -55,7 +55,7 @@ def get_treatments_text(patient):
 	return treatments_text
 
 def get_illnesses_text(patient):
-	if len(patient.illness) == 0:
+	if len(patient.suffer) == 0:
 		return "Je ne connais pas les maladies du patient numéro {}. Veuillez demander au médecin traitant.".format(patient.id)
 
 	illnesses_text = "Le patient numéro {} souffre des maladies suivantes : ".format(patient.id)
