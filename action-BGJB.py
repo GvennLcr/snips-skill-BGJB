@@ -36,14 +36,14 @@ def get_treatments_text(patient):
 	for frequency in patient.frequency:
 		res += '{} de {}, '.format(frequency.treatment.dosage, frequency.treatment.name)
 		if frequency.medicationPerDay != 0:
-			res += '{} fois par jour'.format(frequency.medicationPerDay)
+			res += '{} fois par jour.'.format(frequency.medicationPerDay)
 		elif frequency.medicationPerWeek != 0:
-			res += '{} fois par semaine'.format(frequency.medicationPerWeek)
+			res += '{} fois par semaine.'.format(frequency.medicationPerWeek)
 		else:
 			res += 'dont je ne connais pas la fréquence de prise.'
 
 		if frequency.toDate != None:
-			res += 'Ce médicament est à prendre jusqu\'au {}. '.format(frequency.toDate)
+			res += 'Ce médicament est à prendre jusqu\'au {}. '.format(frequency.toDate.split("T")[0])
 
 	print(res)
 	return res
