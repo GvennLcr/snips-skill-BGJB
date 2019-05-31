@@ -54,31 +54,11 @@ def get_information_text(patient):
 
 	information_text = "Le patient numéro {} s'appelle {} {}.".format(patient.id, patient.firstName, patient.lastName)
 
-	if len(patient.suffer) == 0:
-		return "Je ne connais pas les maladies du patient numéro {}. Veuillez demander au médecin traitant.".format(patient.id)
-
-	illnesses_text = "Le patient numéro {} souffre des maladies suivantes : ".format(patient.id)
-
-	for suffer in patient.suffer:
-		illnesses_text += suffer.illness.name + ", "
+	illnesses_text = get_illnesses_text(patient)
 
 	information_text = information_text + " " + illnesses_text
 	
-	if len(patient.frequency) == 0:
-		return "Je ne connais pas les traitement du patient numéro {}. Veuillez demander au médecin traitant.".format(patient.id)
-
-	treatments_text = "Le patient numéro {} suit les traitements suivants : ".format(patient.id)
-
-	for frequency in patient.frequency:
-		treatments_text += '{} de {}, '.format(frequency.treatment.dosage, frequency.treatment.name)
-		if frequency.medicationPerDay != 0:
-			treatments_text += '{} fois par jour. '.format(frequency.medicationPerDay)
-		elif frequency.medicationPerWeek != 0:
-			treatments_text += '{} fois par semaine. '.format(frequency.medicationPerWeek)
-		else:
-			treatments_text += 'dont je ne connais pas la fréquence de prise.'
-		if frequency.toDate != None:
-			treatments_text += 'Ce médicament est à prendre jusqu\'au {}. '.format(frequency.toDate.split("T")[0])
+	treatments_text = get_treatments_text(patient)
 
 	information_text = information_text + " " + treatments_text
 	print("information_text = " + information_text)
