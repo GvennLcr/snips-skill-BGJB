@@ -15,25 +15,6 @@ headers = {'Content-Type': 'application/json'}
 is_exception_raised = False
 #pdb.set_trace()
 
-def get_info(info_type, patient):
-	switcher = {
-		"Informations": get_information_text(patient),
-		"Garant": "Voici les coordonnées du garant du patient numéro {} : {}".format(patient.id, patient.voucher),
-		"Traitement": get_treatments_text(patient),
-		"Maladie": get_illnesses_text(patient),
-		"Nom": "Le patient numéro {} s'appelle {} {}.".format(patient.id, patient.firstName, patient.lastName)
-	}
-	return switcher.get(info_type, "Invalid info")
-
-def get_information_text(patient):
-	information_text = get_illnesses_text(patient) + " " + get_treatments_text(patient)
-	print("1 - information_text = " + information_text)
-	information_text.replace("Le patient numéro {}".format(patient.id), "Il") # TODO : "Elle" ?
-	print("2 - information_text = " + information_text)
-	full_information_text = get_info("Nom", patient) + " " + information_text
-	print("3 - information_text = " + full_information_text)
-	return full_information_text
-
 def get_treatments_text(patient):
 	if len(patient.frequency) == 0:
 		return "Je ne connais pas les traitement du patient numéro {}. Veuillez demander au médecin traitant.".format(patient.id)
@@ -63,6 +44,25 @@ def get_illnesses_text(patient):
 	for suffer in patient.suffer:
 		illnesses_text += suffer.illness.name + ", "
 	return illnesses_text
+
+def get_information_text(patient):
+	information_text = get_illnesses_text(patient) + " " + get_treatments_text(patient)
+	print("1 - information_text = " + information_text)
+	information_text.replace("Le patient numéro {}".format(patient.id), "Il") # TODO : "Elle" ?
+	print("2 - information_text = " + information_text)
+	information_text = get_info("Nom", patient) + " " + information_text
+	print("3 - information_text = " + information_text)
+	return information_text
+
+def get_info(info_type, patient):
+	switcher = {
+		"Informations": get_information_text(patient),
+		"Garant": "Voici les coordonnées du garant du patient numéro {} : {}".format(patient.id, patient.voucher),
+		"Traitement": get_treatments_text(patient),
+		"Maladie": get_illnesses_text(patient),
+		"Nom": "Le patient numéro {} s'appelle {} {}.".format(patient.id, patient.firstName, patient.lastName)
+	}
+	return switcher.get(info_type, "Invalid info")
 
 
 def patient_info_handler(hermes, intent_message):
