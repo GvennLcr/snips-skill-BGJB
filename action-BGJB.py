@@ -45,10 +45,10 @@ def get_illnesses_text(patient):
 	return illnesses_text
 
 def get_information_text(patient):
-	name_text = "Le patient numéro {} s'appelle {} {}.".format(patient.id, patient.firstName, patient.lastName)
+	name_text = "Le patient numéro {} s\'appelle {} {}.".format(patient.id, patient.firstName, patient.lastName)
 	illnesses_text = get_illnesses_text(patient).replace("Le patient numéro {}".format(patient.id), "Il") # TODO : "Elle" ?
 	treatments_text = get_treatments_text(patient).replace("Le patient numéro {}".format(patient.id), "Il") # TODO : "Elle" ?
-	information_text = name_text + " " + illnesses_text + " " + treatments_text
+	information_text = "{} {} {}".format(name_text, illnesses_text, treatments_text)
 	print("information_text = " + information_text)
 	return information_text
 
@@ -58,7 +58,7 @@ def get_info(info_type, patient):
 		"Garant": "Voici les coordonnées du garant du patient numéro {} : {}".format(patient.id, patient.voucher),
 		"Traitement": get_treatments_text(patient),
 		"Maladie": get_illnesses_text(patient),
-		"Nom": "Le patient numéro {} s'appelle {} {}.".format(patient.id, patient.firstName, patient.lastName)
+		"Nom": "Le patient numéro {} s appelle {} {}.".format(patient.id, patient.firstName, patient.lastName)
 	}
 	return switcher.get(info_type, lambda: "Invalid info")
 
