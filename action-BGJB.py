@@ -29,7 +29,6 @@ def get_treatments_text(patient):
 			treatments_text += '{} fois par semaine. '.format(frequency.medicationPerWeek)
 		else:
 			treatments_text += 'dont je ne connais pas la fréquence de prise.'
-
 		if frequency.toDate != None:
 			treatments_text += 'Ce médicament est à prendre jusqu\'au {}. '.format(frequency.toDate.split("T")[0])
 
@@ -46,12 +45,15 @@ def get_illnesses_text(patient):
 	return illnesses_text
 
 def get_information_text(patient):
-	information_text = get_illnesses_text(patient) + " " + get_treatments_text(patient)
+	"""information_text = get_illnesses_text(patient) + " " + get_treatments_text(patient)
 	print("1 - information_text = " + information_text)
 	information_text.replace("Le patient numéro {}".format(patient.id), "Il") # TODO : "Elle" ?
 	print("2 - information_text = " + information_text)
 	information_text = get_info("Nom", patient) + " " + information_text
-	print("3 - information_text = " + information_text)
+	print("3 - information_text = " + information_text)"""
+
+	information_text = get_info("Nom", patient) + " " + get_illnesses_text(patient) + " " + get_treatments_text(patient)
+	print("information_text = " + information_text)
 	return information_text
 
 def get_info(info_type, patient):
@@ -62,7 +64,7 @@ def get_info(info_type, patient):
 		"Maladie": get_illnesses_text(patient),
 		"Nom": "Le patient numéro {} s'appelle {} {}.".format(patient.id, patient.firstName, patient.lastName)
 	}
-	return switcher.get(info_type, "Invalid info")
+	return switcher.get(info_type, lambda: "Invalid info")
 
 
 def patient_info_handler(hermes, intent_message):
