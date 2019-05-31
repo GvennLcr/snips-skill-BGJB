@@ -45,7 +45,7 @@ def get_illnesses_text(patient):
 	return illnesses_text
 
 def get_information_text(patient):
-	information_text = "Le patient numéro {} s'appelle {} {}.".format(patient.id, patient.firstName, patient.lastName)
+	information_text = get_info("Nom", patient)
 	illnesses_text = get_illnesses_text(patient).replace("Le patient numéro {}".format(patient.id), "Il") # TODO : "Elle" ?
 
 	information_text = information_text + " " + illnesses_text
