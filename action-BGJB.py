@@ -45,22 +45,10 @@ def get_illnesses_text(patient):
 	return illnesses_text
 
 def get_information_text(patient):
-	"""information_text = get_illnesses_text(patient) + " " + get_treatments_text(patient)
-	print("1 - information_text = " + information_text)
-	information_text.replace("Le patient numéro {}".format(patient.id), "Il") # TODO : "Elle" ?
-	print("2 - information_text = " + information_text)
-	information_text = get_info("Nom", patient) + " " + information_text
-	print("3 - information_text = " + information_text)"""
-
-	information_text = "Le patient numéro {} s'appelle {} {}.".format(patient.id, patient.firstName, patient.lastName)
-
-	illnesses_text = get_illnesses_text(patient)
-
-	information_text = information_text + " " + illnesses_text
-	
-	treatments_text = get_treatments_text(patient)
-
-	information_text = information_text + " " + treatments_text
+	name_text = get_info("Nom", patient)
+	illnesses_text = get_illnesses_text(patient).replace("Le patient numéro {}".format(patient.id), "Il") # TODO : "Elle" ?
+	treatments_text = get_treatments_text(patient).replace("Le patient numéro {}".format(patient.id), "Il") # TODO : "Elle" ?
+	information_text = name_text + " " + illnesses_text + " " + treatments_text
 	print("information_text = " + information_text)
 	return information_text
 
