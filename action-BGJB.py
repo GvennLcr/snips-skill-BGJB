@@ -26,43 +26,43 @@ def get_info(info_type, patient):
 	return switcher.get(info_type, "Invalid info")
 
 def get_information_text(patient):
-	res = get_illnesses_text(patient) + " " + get_treatments_text(patient)
-	print("1 - res = " + res)
-	res.replace("Le patient numéro {}".format(patient.id), "Il") # TODO : "Elle" ?
-	print("2 - res = " + res)
-	res = get_info("Nom", patient) + " " + res
-	print("3 - res = " + res)
-	return res
+	information_text = get_illnesses_text(patient) + " " + get_treatments_text(patient)
+	print("1 - information_text = " + information_text)
+	information_text.replace("Le patient numéro {}".format(patient.id), "Il") # TODO : "Elle" ?
+	print("2 - information_text = " + information_text)
+	information_text = get_info("Nom", patient) + " " + information_text
+	print("3 - information_text = " + information_text)
+	return information_text
 
 def get_treatments_text(patient):
 	if len(patient.frequency) == 0:
-		return "Le patient numéro {} ne suit aucun traitement.".format(patient.id)
+		return "Je ne connais pas les traitement du patient numéro {}. Veuillez demander au médecin traitant.".format(patient.id)
 
-	res = "Le patient numéro {} suit les traitements suivants : ".format(patient.id)
+	treatments_text = "Le patient numéro {} suit les traitements suivants : ".format(patient.id)
 
 	for frequency in patient.frequency:
-		res += '{} de {}, '.format(frequency.treatment.dosage, frequency.treatment.name)
+		treatments_text += '{} de {}, '.format(frequency.treatment.dosage, frequency.treatment.name)
 		if frequency.medicationPerDay != 0:
-			res += '{} fois par jour. '.format(frequency.medicationPerDay)
+			treatments_text += '{} fois par jour. '.format(frequency.medicationPerDay)
 		elif frequency.medicationPerWeek != 0:
-			res += '{} fois par semaine. '.format(frequency.medicationPerWeek)
+			treatments_text += '{} fois par semaine. '.format(frequency.medicationPerWeek)
 		else:
-			res += 'dont je ne connais pas la fréquence de prise.'
+			treatments_text += 'dont je ne connais pas la fréquence de prise.'
 
 		if frequency.toDate != None:
-			res += 'Ce médicament est à prendre jusqu\'au {}. '.format(frequency.toDate.split("T")[0])
+			treatments_text += 'Ce médicament est à prendre jusqu\'au {}. '.format(frequency.toDate.split("T")[0])
 
-	return res
+	return treatments_text
 
 def get_illnesses_text(patient):
-	if len(patient.frequency) == 0:
+	if len(patient.illness) == 0:
 		return "Je ne connais pas les maladies du patient numéro {}. Veuillez demander au médecin traitant.".format(patient.id)
 
-	res = "Le patient numéro {} souffre des maladies suivantes : ".format(patient.id)
+	illnesses_text = "Le patient numéro {} souffre des maladies suivantes : ".format(patient.id)
 
 	for suffer in patient.suffer:
-		res += suffer.illness.name + ", "
-	return res
+		illnesses_text += suffer.illness.name + ", "
+	return illnesses_text
 
 
 def patient_info_handler(hermes, intent_message):
