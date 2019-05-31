@@ -23,29 +23,37 @@ def get_treatments_text(patient):
 
 	for frequency in patient.frequency:
 		treatments_text += '{} de {}, '.format(frequency.treatment.dosage, frequency.treatment.name)
-		if frequency.medicationPerDay != 0:
-			treatments_text += '{} fois par jour. '.format(frequency.medicationPerDay)
-		elif frequency.medicationPerWeek != 0:
-			treatments_text += '{} fois par semaine. '.format(frequency.medicationPerWeek)
+		if frequency.medicationPerDay != '0':
+			treatments_text += '{} fois par jour'.format(frequency.medicationPerDay)
+		elif frequency.medicationPerWeek != '0':
+			treatments_text += '{} fois par semaine'.format(frequency.medicationPerWeek)
 		else:
 			treatments_text += 'dont je ne connais pas la fréquence de prise.'
 		if frequency.toDate != None:
-			treatments_text += 'Ce médicament est à prendre jusqu\'au {}. '.format(frequency.toDate.split("T")[0])
+			treatments_text += ', à prendre jusqu\'au {}. '.format(frequency.toDate.split("T")[0])
+		else:
+			treatments_text += ". "
 
 	return treatments_text
 
 def get_illnesses_text(patient):
 	if len(patient.suffer) == 0:
 		return "Je ne connais pas les maladies du patient numéro {}. Veuillez demander au médecin traitant.".format(patient.id)
+	elif len(patient.suffer) == 1:
+		return "Le patient numéro {} souffre de {}".format(patient.id, patient.suffer[0].illness.name)
 
 	illnesses_text = "Le patient numéro {} souffre des maladies suivantes : ".format(patient.id)
 
 	for suffer in patient.suffer:
-		illnesses_text += suffer.illness.name + ", "
+		illnesses_text += suffer.illness.name
+		if patient.suffer[len(patient.suffer) - 1].id == suffer.id:
+			illnesses_text += ". "
+		else:
+			illnesses_text += ", "
 	return illnesses_text
 
 def get_information_text(patient):
-	name_text = "Le patient numéro {} s\'appelle {} {}.".format(patient.id, patient.firstName, patient.lastName)
+	name_text = "Le patient numéro {} s appelle {} {}.".format(patient.id, patient.firstName, patient.lastName)
 	illnesses_text = get_illnesses_text(patient).replace("Le patient numéro {}".format(patient.id), "Il") # TODO : "Elle" ?
 	treatments_text = get_treatments_text(patient).replace("Le patient numéro {}".format(patient.id), "Il") # TODO : "Elle" ?
 	information_text = "{} {} {}".format(name_text, illnesses_text, treatments_text)
@@ -78,10 +86,8 @@ def patient_info_handler(hermes, intent_message):
 
 		patient = json.loads(apiResponse.text, object_hook=lambda d: namedtuple('X', d.keys())(*d.values()))
 		print(patient)
-		#print("patient.suffer.first().illness.name = {}".format(patient.suffer.first().illness.name))
 		print("intent_message.slots.InfoType.first().value = {}".format(intent_message.slots.InfoType.first().value))
 		patient_info = get_info(intent_message.slots.InfoType.first().value, patient)
-		#patient_info = "Le patient numéro {} s appelle {} {}".format(patientId, patient.firstName, patient.lastName)
 
 	except ConnectionError as ex:
 		print(ex)
