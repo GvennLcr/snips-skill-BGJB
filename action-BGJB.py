@@ -7,6 +7,7 @@ import json
 import pdb
 import requests
 
+log_text = ""
 MQTT_IP_ADDR = "localhost"
 MQTT_PORT = 1883
 MQTT_ADDR = "{}:{}".format(MQTT_IP_ADDR, str(MQTT_PORT))
@@ -71,8 +72,9 @@ def get_info(info_type, patient):
 	return switcher.get(info_type, lambda: "Invalid info")
 
 
-def patient_info_handler(hermes, intent_message):
+def patient_info_handler(hermes, intent_message, log_text = log_text):
 	try:
+		log_text += "intent_message = " + intent_message
 		patient_info = ""
 		patientId = int(intent_message.slots.PatientId.first().value)
 		print(patientId)
@@ -100,9 +102,16 @@ def patient_info_handler(hermes, intent_message):
 		patient_info = "Désolé, une erreur est survenue, pouvez-vous répéter ou reformuler votre phrase s'il vous plaît ?"
 	finally:
 		print("DEBUG : patient_info = " + patient_info)
+		log = open("log{}.txt".format(now.date().isoformat().replace('-', '_')), "a")
+		log.write(log_text + patient_info)
+		log.close()
+		
+		f = open("log{}.txt".format(now.date().isoformat().replace('-', '_')), "r")
+		print(f.read())
 		hermes.publish_end_session(intent_message.session_id, patient_info)
 
 
 with Hermes(MQTT_ADDR) as h:
 	print("test")
+	log_text += "--- wake word detected ---"
 	h.subscribe_intent('DiiagePFC:AskPatientInfos', patient_info_handler).start()
